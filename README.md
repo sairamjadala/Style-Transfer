@@ -1,22 +1,19 @@
 # Style-Transfer
 Style Transfer Using Stable Diffusion &amp; ComfyUI
-# Upload image from local system
-from google.colab import files
 from PIL import Image
 import matplotlib.pyplot as plt
 
-# Upload lion image
-uploaded = files.upload()
+# Load the lion image
+image_path = "lion.jpg "  # Path to the uploaded image
+content_image = Image.open(image_path).convert("RGB")
 
-# Load and display uploaded lion image
-for file_name in uploaded.keys():
-    content_image = Image.open(file_name).convert("RGB")
-    plt.imshow(content_image)
-    plt.axis("off")
-    plt.title("Uploaded Lion Image")
-    plt.show()
-    from diffusers import StableDiffusionPipeline
-  import torch
+# Display the content image
+plt.imshow(content_image)
+plt.axis("off")
+plt.title("Loaded Lion Image")
+plt.show()
+from diffusers import StableDiffusionPipeline
+import torch
 
 # Load Stable Diffusion pipeline
 def load_pipeline(model_id="CompVis/stable-diffusion-v1-4"):
@@ -27,28 +24,31 @@ def load_pipeline(model_id="CompVis/stable-diffusion-v1-4"):
     pipeline.to(device)
     return pipeline
 
-# Initialize pipeline
 pipeline = load_pipeline()
-print("✅ Stable Diffusion Pipeline Loaded Successfully.")
+print("Stable Diffusion Pipeline Loaded Successfully.")
 
-# Generate stylized image using Stable Diffusion
+# Generate stylized image
 def generate_stylized_image(prompt, pipeline):
     image = pipeline(prompt, num_inference_steps=50, guidance_scale=7.5)["images"][0]
     return image
 
-# Define the artistic style prompt (Van Gogh style)
+# Define the style prompt (Van Gogh style as example)
 prompt = "A majestic lion painted in the style of Van Gogh"
 
 # Apply style transfer
 stylized_image = generate_stylized_image(prompt, pipeline)
 
-# Display the stylized lion image
-plt.imshow(lion)
+# Display the stylized image
+plt.imshow(stylized_image)
 plt.axis("off")
-plt.title("Lion(Van Gogh Style)")
+plt.title("Stylized Lion Image")
 plt.show()
 
 # Save the stylized image
-stylized_image.save("lion.png")
-print("✅ Stylized lion image saved as lino.png")
+stylized_image.save("stylized_lion_image.png")
+print("Stylized lion image saved as stylized_lion_image.png")
 
+from google.colab import files
+
+# Download the stylized lion image
+files.download("stylized_lion_image.png")
